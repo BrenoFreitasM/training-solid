@@ -3,6 +3,7 @@
         "@rocketseat/eslint-config/node"
     ],
     "rules": {
-        "camelCase": "off"
+        "camelCase": "off",
+        "no-useless-constructor": "off"
     }
 }

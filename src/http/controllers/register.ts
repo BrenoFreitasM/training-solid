@@ -15,7 +15,10 @@ export async function register (request: FastifyRequest, reply: FastifyReply) {
     const { name, email, password } = registerBodySchema.parse(request.body);
 
     try {
+        // Módulo de Baixo nível (detalhe)
         const usersRepository = new PrismaUsersRepository()
+
+        // Injeção da dependência (Use Case recebe a Implementação, mas só "conheçe" a inteface)
         const registerUseCase = new RegisterUseCase(usersRepository)
 
         await registerUseCase.execute({

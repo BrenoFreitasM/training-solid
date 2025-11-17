@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { hash } from "bcryptjs";
+import { UsersRepository } from "@/repositories/users-repository"; // Depende da Abstração
 
 interface RegisterUseCaseRequest {
   name: string;
@@ -12,13 +13,9 @@ interface RegisterUseCaseRequest {
 // D - Dependency Inversion Principle
 
 export class RegisterUseCase {
-  private usersRepository: any
-
-  // Aqui poderia ser | Para substituir o código acima
-  // cosntructor(private usersRepository: any) {
-  constructor(usersRepository: any) {
-    this.usersRepository = usersRepository
-  }
+  // O construtor agora tipa a dependência como a Interface UsersRepository
+  // O Use Case (Alto Nível) depende da Abstração (Interface)
+  constructor(private usersRepository: UsersRepository) {}
 
   async execute({
     name,
@@ -27,13 +24,11 @@ export class RegisterUseCase {
   }: RegisterUseCaseRequest) {
     const password_hash = await hash(password, 6);
 
-    const userWithSameEmail = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    // Usando o novo método findByEmail através da Interface
+    const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
     if (userWithSameEmail) {
+      // Recomenda-se criar erros de domínio específicos, mas para o exemplo:
       throw new Error('E-mail already exist.')
     }
 

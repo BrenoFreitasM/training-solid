@@ -1,5 +1,5 @@
 import { UsersRepository } from "@/repositories/users-repository";
-import { InvalidCredentialsError } from "./errors/invalid-credentials-errors";
+import { InvalidCredentialsError } from "./errors/invalid-credentials-error";
 import { compare } from "bcryptjs";
 import { User } from "@prisma/client";
 
@@ -17,6 +17,7 @@ export class AuthenticateUseCase {
         private userRepository: UsersRepository
     ) {}
 
+    
 
     async execute({ email, password }: AuthenticateUseCaseRequest ): Promise<AuthenticateUseCaseResponse> {
         const user = await this.userRepository.findByEmail(email)
